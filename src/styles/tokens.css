@@ -1,0 +1,62 @@
+:root {
+  /* Background layers */
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #181818;
+  --card: #1a1a1a;
+
+  /* Borders */
+  --border: #2a2a2a;
+
+  /* Text */
+  --text: #d4cfc8;
+  --text-dim: #7a7570;
+  --white: #f0ece6;
+
+  /* Accent — military gold */
+  --accent: #bf9b3e;
+  --accent-dim: #8a6f2c;
+
+  /* Semantic colors */
+  --green: #3d8a5a;
+  --green-bg: #1a2e22;
+
+  --blue: #3d6e99;
+  --blue-bg: #1a2430;
+
+  --red: #994040;
+  --red-bg: #2a1a1a;
+
+  --orange: #99723d;
+  --orange-bg: #2a2218;
+
+  --yellow: #99903d;
+
+  /* Typography */
+  --font-display: "Oswald", "Impact", sans-serif;
+  --font-body: "Source Sans Pro", "Segoe UI", sans-serif;
+  --font-mono: "SF Mono", "Monaco", "Inconsolata", monospace;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Border radius */
+  --radius-sm: 2px;
+  --radius: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* Shadows */
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.7);
+
+  /* Transitions */
+  --transition: 150ms ease;
+}

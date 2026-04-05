@@ -1,0 +1,121 @@
+/* Timer display — large monospace countdown */
+.timer-display {
+  font-family: var(--font-mono);
+  font-size: 3rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-align: center;
+  line-height: 1;
+  padding: var(--space-5) 0;
+  transition: color var(--transition);
+}
+
+.timer-display.timer-active {
+  color: var(--white);
+  text-shadow: 0 0 20px rgba(191, 155, 62, 0.4);
+}
+
+/* Timer button — styled like .btn with primary variant */
+.timer-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.timer-btn:hover {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+
+.timer-btn--start {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--white);
+}
+
+.timer-btn--start:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.timer-btn--cancel {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.timer-btn--cancel:hover {
+  background: var(--red-bg);
+}
+
+/* Timer ring — SVG circle progress */
+.timer-ring {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  height: 160px;
+  margin: 0 auto;
+}
+
+.timer-ring__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.timer-ring__track {
+  fill: none;
+  stroke: var(--bg3);
+  stroke-width: 6;
+}
+
+.timer-ring__progress {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 408; /* 2π × r where r ≈ 65 */
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear, stroke var(--transition);
+}
+
+.timer-ring__progress.timer-active {
+  stroke: var(--accent);
+}
+
+.timer-ring__label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Active state — pulse animation on container */
+.timer-active .timer-ring__progress {
+  animation: timer-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes timer-pulse {
+  from { opacity: 0.85; }
+  to   { opacity: 1; }
+}

@@ -1,0 +1,124 @@
+/* PR Board — personal records grid */
+
+.pr-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .pr-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* PR Card */
+.pr-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.pr-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.pr-card-label {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* Reset button */
+.pr-reset-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 2px 6px;
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.pr-reset-btn:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: var(--red-bg);
+}
+
+/* PR Value — large number */
+.pr-value {
+  font-family: var(--font-mono);
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.pr-unit {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+.pr-empty {
+  color: var(--text-dim);
+  font-size: 1.5rem;
+}
+
+/* Sparkline SVG bar chart */
+.pr-sparkline {
+  display: block;
+  width: 100%;
+  max-width: 60px;
+  height: 24px;
+  overflow: visible;
+}
+
+/* PR History list */
+.pr-history {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: var(--space-1);
+}
+
+.pr-history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  padding: 1px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.pr-history-item:last-child {
+  border-bottom: none;
+}
+
+.pr-history-date {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+}
+
+.pr-history-value {
+  font-family: var(--font-mono);
+  color: var(--text);
+}

@@ -252,6 +252,37 @@ function render(container: HTMLElement): void {
     html += "</div></div>"
   }
 
+  // Intro section
+  html += `<div class="home-intro">
+    <div class="home-intro__header">★ ★ ★</div>
+    <h2 class="home-intro__title">Rutina Estilo Militar</h2>
+    <p class="home-intro__sub">Sistema completo · Bajo impacto · Peso corporal</p>
+    <div class="home-intro__divider"></div>
+    <div class="home-intro__grid">
+      <div class="home-intro__item">
+        <div class="home-intro__item-icon">⚡</div>
+        <div class="home-intro__item-title">Fuerza funcional</div>
+        <div class="home-intro__item-desc">Movimientos compuestos con control excéntrico. Sin equipo, sin impacto articular.</div>
+      </div>
+      <div class="home-intro__item">
+        <div class="home-intro__item-icon">📈</div>
+        <div class="home-intro__item-title">Progresión medible</div>
+        <div class="home-intro__item-desc">4 fases con criterios de salida claros. Subís de fase cuando los números lo demuestran.</div>
+      </div>
+      <div class="home-intro__item">
+        <div class="home-intro__item-icon">⚖️</div>
+        <div class="home-intro__item-title">Ratio push:pull 1:1.5</div>
+        <div class="home-intro__item-desc">Más tracción que empuje. Así se construye postura, no se destruye.</div>
+      </div>
+      <div class="home-intro__item">
+        <div class="home-intro__item-icon">🎯</div>
+        <div class="home-intro__item-title">RPE 6–8</div>
+        <div class="home-intro__item-desc">Siempre con margen. El estímulo óptimo no requiere ir al fallo.</div>
+      </div>
+    </div>
+    <p class="home-intro__footer">Empezá en <strong>Rutina</strong> para ver el plan completo · <strong>Tracking</strong> para registrar sesiones</p>
+  </div>`
+
   container.innerHTML = html
 
   container.querySelectorAll<HTMLButtonElement>("[data-action='goto-tracking']").forEach((btn) => {

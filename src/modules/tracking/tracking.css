@@ -626,6 +626,136 @@
   margin-left: var(--space-1);
 }
 
+/* --- Activity view --- */
+
+.trk-activity-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+@media (max-width: 480px) {
+  .trk-activity-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+.trk-activity-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.trk-activity-section__title {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: var(--space-3);
+}
+
+/* Heatmap — scrollable on mobile */
+.trk-activity-heatmap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.trk-activity-heatmap svg {
+  display: block;
+}
+
+/* Monthly bar chart — full width SVG */
+.trk-activity-barchart {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.trk-activity-barchart svg {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Personal records list */
+.trk-activity-pr-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.trk-activity-pr-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  flex-wrap: wrap;
+}
+
+.trk-activity-pr-badge {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid currentColor;
+  flex-shrink: 0;
+}
+
+.trk-activity-pr-badge--push {
+  color: #c4944a;
+  border-color: #c4944a;
+  background: rgba(196, 148, 74, 0.1);
+}
+.trk-activity-pr-badge--pull {
+  color: #5a8abf;
+  border-color: #5a8abf;
+  background: rgba(90, 138, 191, 0.1);
+}
+.trk-activity-pr-badge--lower {
+  color: #4a9a6a;
+  border-color: #4a9a6a;
+  background: rgba(74, 154, 106, 0.1);
+}
+.trk-activity-pr-badge--core {
+  color: #b5a84a;
+  border-color: #b5a84a;
+  background: rgba(181, 168, 74, 0.1);
+}
+
+.trk-activity-pr-name {
+  flex: 1;
+  font-size: 0.9rem;
+  color: var(--text);
+  min-width: 100px;
+}
+
+.trk-activity-pr-value {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.trk-activity-pr-date {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.trk-activity-pr-empty {
+  font-size: 0.875rem;
+  color: var(--text-dim);
+  font-style: italic;
+  padding: var(--space-2) 0;
+}
+
 /* --- Phase advance banner --- */
 
 .trk-advance-banner {

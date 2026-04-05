@@ -195,7 +195,7 @@ function computeSemaphore(sessions: Record<string, SessionRecord>): SemaphoreRes
 // Module state
 // ---------------------------------------------------------------------------
 
-type SubView = "log" | "week" | "history"
+type SubView = "log" | "week" | "activity" | "history"
 
 let rootEl: HTMLElement | null = null
 let currentDate: string = todayISO()
@@ -708,6 +708,382 @@ function buildWeekView(): HTMLElement {
   return view
 }
 
+// ---------------------------------------------------------------------------
+// Activity helpers
+// ---------------------------------------------------------------------------
+
+/** Returns sessions in the current calendar year */
+function sessionsThisYear(sessions: Record<string, SessionRecord>): SessionRecord[] {
+  const year = new Date().getFullYear()
+  return Object.values(sessions).filter((s) => s.date.startsWith(String(year)))
+}
+
+/**
+ * Racha actual: consecutive training days up to today, skipping Sundays.
+ * A day is "supposed to train" if it is Mon–Sat and the user trained.
+ * Streak breaks on the first Mon–Sat day that has no session.
+ */
+function computeStreak(sessions: Record<string, SessionRecord>): number {
+  const trainingDays = new Set(Object.keys(sessions))
+  let streak = 0
+  const today = new Date()
+  // Walk backwards from today
+  for (let offset = 0; offset <= 365; offset++) {
+    const d = new Date(today)
+    d.setDate(d.getDate() - offset)
+    const dow = d.getDay() // 0=Sun
+    if (dow === 0) continue // skip Sundays
+    const iso = d.toISOString().slice(0, 10)
+    if (trainingDays.has(iso)) {
+      streak++
+    } else {
+      break
+    }
+  }
+  return streak
+}
+
+/**
+ * Consistency %: sessions this year / (elapsed weeks × target days per phase).
+ * Target days per phase: Phase 1 → 3, Phase 2 → 4, Phase 3 → 4, Phase 4 → 5.
+ */
+function computeConsistency(
+  sessions: Record<string, SessionRecord>,
+  phase: Phase,
+): number {
+  const targetDays = ROUNDS_PER_PHASE[phase] // reusing same map (3/4/4/5)
+  const yearStart = new Date(`${new Date().getFullYear()}-01-01T00:00:00Z`)
+  const now = new Date()
+  const msPerWeek = 7 * 24 * 60 * 60 * 1000
+  const weeksElapsed = Math.max(1, Math.floor((now.getTime() - yearStart.getTime()) / msPerWeek))
+  const expected = weeksElapsed * targetDays
+  const actual = sessionsThisYear(sessions).length
+  return Math.min(100, Math.round((actual / expected) * 100))
+}
+
+/** Build 365-day map: date → {volume, hasPain} */
+interface DayData {
+  volume: number
+  hasPain: boolean
+}
+
+function buildDayMap(sessions: Record<string, SessionRecord>): Map<string, DayData> {
+  const map = new Map<string, DayData>()
+  for (const session of Object.values(sessions)) {
+    const vol = sessionVolume(session)
+    const pain = session.pain !== undefined && session.pain !== PAIN_ZONES.NO
+    map.set(session.date, { volume: vol, hasPain: pain })
+  }
+  return map
+}
+
+/** Returns color for a heatmap cell */
+function heatColor(dayData: DayData | undefined, maxVol: number): string {
+  if (!dayData || dayData.volume === 0) return "#161a1e"
+  if (dayData.hasPain) return "#7a4a20"
+  const ratio = maxVol > 0 ? dayData.volume / maxVol : 0
+  if (ratio > 0.75) return "#2d7a3a"
+  if (ratio > 0.5) return "#256d30"
+  if (ratio > 0.25) return "#1e5a26"
+  return "#194d20"
+}
+
+/** Build SVG heatmap string */
+function buildHeatmapSVG(sessions: Record<string, SessionRecord>): string {
+  const dayMap = buildDayMap(sessions)
+  const maxVol = Math.max(0, ...Array.from(dayMap.values()).map((d) => d.volume))
+
+  // Build 365-day grid starting from the Monday of the week 52 weeks ago
+  const today = new Date()
+  const todayISO_ = today.toISOString().slice(0, 10)
+
+  // Start from 364 days ago aligned to Monday
+  const startDate = new Date(today)
+  startDate.setDate(startDate.getDate() - 364)
+  // rewind to Monday
+  const startDow = startDate.getUTCDay()
+  startDate.setUTCDate(startDate.getUTCDate() - (startDow === 0 ? 6 : startDow - 1))
+
+  const cellSize = 11
+  const cellGap = 2
+  const step = cellSize + cellGap
+  const leftPad = 20 // for day labels
+  const topPad = 20  // for month labels
+
+  // Collect weeks
+  const weeks: Array<Array<{ iso: string; dow: number }>> = []
+  let currentWeek: Array<{ iso: string; dow: number }> = []
+  const d = new Date(startDate)
+
+  while (d <= today) {
+    const dow = d.getUTCDay() // 0=Sun
+    const iso = d.toISOString().slice(0, 10)
+    // Monday=0 in our grid (Mon–Sun = rows 0–6)
+    const row = dow === 0 ? 6 : dow - 1
+    currentWeek.push({ iso, dow: row })
+    if (dow === 0) {
+      // Sunday closes the week
+      weeks.push(currentWeek)
+      currentWeek = []
+    }
+    d.setUTCDate(d.getUTCDate() + 1)
+  }
+  if (currentWeek.length > 0) weeks.push(currentWeek)
+
+  const svgWidth = leftPad + weeks.length * step + cellGap
+  const svgHeight = topPad + 7 * step + 24 // 24px for legend
+
+  // Month label positions
+  const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+  const monthLabels: Array<{ x: number; label: string }> = []
+  let lastMonth = -1
+  weeks.forEach((week, wi) => {
+    const firstDay = week[0]
+    if (!firstDay) return
+    const m = new Date(`${firstDay.iso}T00:00:00Z`).getUTCMonth()
+    if (m !== lastMonth) {
+      monthLabels.push({ x: leftPad + wi * step, label: monthNames[m] ?? "" })
+      lastMonth = m
+    }
+  })
+
+  // Build SVG cells
+  let cells = ""
+  weeks.forEach((week, wi) => {
+    const x = leftPad + wi * step
+    for (const cell of week) {
+      const y = topPad + cell.dow * step
+      const data = dayMap.get(cell.iso)
+      const fill = heatColor(data, maxVol)
+      const isToday = cell.iso === todayISO_
+      const stroke = isToday ? " stroke=\"#bf9b3e\" stroke-width=\"1\"" : ""
+      const title = data
+        ? `${cell.iso}: vol ${data.volume}${data.hasPain ? " ⚠ dolor" : ""}`
+        : cell.iso
+      cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${fill}"${stroke}><title>${title}</title></rect>`
+    }
+  })
+
+  // Month labels
+  let monthSVG = ""
+  for (const ml of monthLabels) {
+    monthSVG += `<text x="${ml.x}" y="13" fill="#7a7570" font-size="9" font-family="var(--font-display)">${ml.label}</text>`
+  }
+
+  // Day labels (L/M/V at rows 0,1,4 → Mon,Tue,Fri)
+  const dayLabelRows: Array<{ row: number; label: string }> = [
+    { row: 0, label: "L" },
+    { row: 2, label: "M" },
+    { row: 4, label: "V" },
+  ]
+  let dayLabelSVG = ""
+  for (const dl of dayLabelRows) {
+    const y = topPad + dl.row * step + cellSize - 1
+    dayLabelSVG += `<text x="0" y="${y}" fill="#7a7570" font-size="9" font-family="var(--font-display)">${dl.label}</text>`
+  }
+
+  // Legend
+  const legendY = topPad + 7 * step + 8
+  const legendColors = ["#161a1e", "#194d20", "#1e5a26", "#256d30", "#2d7a3a", "#7a4a20"]
+  const legendLabels = ["Sin datos", "Bajo", "Med-bajo", "Med-alto", "Alto", "Dolor"]
+  let legendSVG = `<text x="${leftPad}" y="${legendY + 9}" fill="#7a7570" font-size="9" font-family="var(--font-display)">Menos</text>`
+  let lx = leftPad + 36
+  for (let li = 0; li < legendColors.length; li++) {
+    legendSVG += `<rect x="${lx}" y="${legendY}" width="${cellSize}" height="${cellSize}" rx="2" fill="${legendColors[li]}"><title>${legendLabels[li]}</title></rect>`
+    lx += step
+  }
+  legendSVG += `<text x="${lx + 2}" y="${legendY + 9}" fill="#7a7570" font-size="9" font-family="var(--font-display)">Más</text>`
+
+  return `<svg width="${svgWidth}" height="${svgHeight}" xmlns="http://www.w3.org/2000/svg">${monthSVG}${dayLabelSVG}${cells}${legendSVG}</svg>`
+}
+
+/** Build monthly bar chart SVG */
+function buildMonthlyBarSVG(sessions: Record<string, SessionRecord>): string {
+  const year = new Date().getFullYear()
+  const monthCounts = new Array<number>(12).fill(0)
+  for (const s of Object.values(sessions)) {
+    if (s.date.startsWith(String(year))) {
+      const m = parseInt(s.date.slice(5, 7), 10) - 1
+      if (m >= 0 && m < 12) monthCounts[m] = (monthCounts[m] ?? 0) + 1
+    }
+  }
+
+  const maxCount = Math.max(1, ...monthCounts)
+  const barW = 24
+  const barGap = 6
+  const chartH = 80
+  const labelH = 16
+  const svgW = 12 * (barW + barGap) + barGap
+  const svgH = chartH + labelH
+
+  const monthAbbr = ["E", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"]
+  const currentMonth = new Date().getMonth()
+
+  let bars = ""
+  for (let i = 0; i < 12; i++) {
+    const count = monthCounts[i] ?? 0
+    const barH = count === 0 ? 2 : Math.max(4, Math.round((count / maxCount) * chartH))
+    const x = barGap + i * (barW + barGap)
+    const y = chartH - barH
+
+    let fill: string
+    if (count === 0) {
+      fill = "#2a2a2a"
+    } else if (count >= 12) {
+      fill = "#3d8a5a" // green
+    } else if (count >= 8) {
+      fill = "#99723d" // orange
+    } else {
+      fill = "#bf9b3e" // accent
+    }
+
+    const isCurrent = i === currentMonth
+    const stroke = isCurrent ? ` stroke="#bf9b3e" stroke-width="1"` : ""
+
+    bars += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" rx="2" fill="${fill}"${stroke}><title>${monthAbbr[i]}: ${count} sesiones</title></rect>`
+    bars += `<text x="${x + barW / 2}" y="${svgH - 2}" text-anchor="middle" fill="#7a7570" font-size="9" font-family="var(--font-display)">${monthAbbr[i]}</text>`
+    if (count > 0) {
+      bars += `<text x="${x + barW / 2}" y="${y - 3}" text-anchor="middle" fill="#d4cfc8" font-size="9" font-family="var(--font-display)">${count}</text>`
+    }
+  }
+
+  return `<svg width="${svgW}" height="${svgH}" xmlns="http://www.w3.org/2000/svg">${bars}</svg>`
+}
+
+function buildActivityView(): HTMLElement {
+  const view = document.createElement("div")
+  view.className = "trk-view"
+  view.id = "trk-view-activity"
+
+  const state = getState()
+  const data = state.getData()
+  const sessions = data.sessions
+  const phase = data.currentPhase
+
+  // --- Stats bar ---
+  const statsBar = document.createElement("div")
+  statsBar.className = "trk-activity-stats"
+
+  const yearSessions = sessionsThisYear(sessions).length
+  const streak = computeStreak(sessions)
+  const consistency = computeConsistency(sessions, phase)
+
+  const statsData = [
+    { label: `Sesiones ${new Date().getFullYear()}`, value: String(yearSessions) },
+    { label: "Racha actual", value: `${streak} días` },
+    { label: "Consistencia", value: `${consistency}%` },
+  ]
+
+  for (const stat of statsData) {
+    const card = document.createElement("div")
+    card.className = "trk-metric-card"
+    const lbl = document.createElement("div")
+    lbl.className = "trk-metric-card__label"
+    lbl.textContent = stat.label
+    const val = document.createElement("div")
+    val.className = "trk-metric-card__value"
+    val.textContent = stat.value
+    card.appendChild(lbl)
+    card.appendChild(val)
+    statsBar.appendChild(card)
+  }
+  view.appendChild(statsBar)
+
+  // --- Heatmap ---
+  const heatSection = document.createElement("div")
+  heatSection.className = "trk-activity-section"
+
+  const heatTitle = document.createElement("div")
+  heatTitle.className = "trk-activity-section__title"
+  heatTitle.textContent = "Actividad — últimos 365 días"
+
+  const heatScroll = document.createElement("div")
+  heatScroll.className = "trk-activity-heatmap"
+  heatScroll.innerHTML = buildHeatmapSVG(sessions)
+
+  heatSection.appendChild(heatTitle)
+  heatSection.appendChild(heatScroll)
+  view.appendChild(heatSection)
+
+  // --- Monthly chart ---
+  const barSection = document.createElement("div")
+  barSection.className = "trk-activity-section"
+
+  const barTitle = document.createElement("div")
+  barTitle.className = "trk-activity-section__title"
+  barTitle.textContent = `Sesiones por mes — ${new Date().getFullYear()}`
+
+  const barWrap = document.createElement("div")
+  barWrap.className = "trk-activity-barchart"
+  barWrap.innerHTML = buildMonthlyBarSVG(sessions)
+
+  barSection.appendChild(barTitle)
+  barSection.appendChild(barWrap)
+  view.appendChild(barSection)
+
+  // --- Personal Records ---
+  const prSection = document.createElement("div")
+  prSection.className = "trk-activity-section"
+
+  const prTitle = document.createElement("div")
+  prTitle.className = "trk-activity-section__title"
+  prTitle.textContent = "Récords personales"
+
+  prSection.appendChild(prTitle)
+
+  const prList = document.createElement("div")
+  prList.className = "trk-activity-pr-list"
+
+  let hasPR = false
+  for (const cfg of EXERCISE_CONFIGS) {
+    const prRecords = data.prs[cfg.id]
+    if (!prRecords || prRecords.length === 0) continue
+
+    hasPR = true
+    const best = prRecords.reduce(
+      (max, pr) => (pr.value > max.value ? pr : max),
+      prRecords[0] ?? { value: 0, date: "", unit: cfg.unit },
+    )
+
+    const row = document.createElement("div")
+    row.className = "trk-activity-pr-row"
+
+    const badge = document.createElement("span")
+    badge.className = `trk-activity-pr-badge trk-activity-pr-badge--${cfg.cat}`
+    badge.textContent = cfg.cat.toUpperCase()
+
+    const name = document.createElement("span")
+    name.className = "trk-activity-pr-name"
+    name.textContent = cfg.label
+
+    const val = document.createElement("span")
+    val.className = "trk-activity-pr-value"
+    val.textContent = `${best.value} ${cfg.unit}`
+
+    const date = document.createElement("span")
+    date.className = "trk-activity-pr-date"
+    date.textContent = formatDate(best.date)
+
+    row.appendChild(badge)
+    row.appendChild(name)
+    row.appendChild(val)
+    row.appendChild(date)
+    prList.appendChild(row)
+  }
+
+  if (!hasPR) {
+    const empty = document.createElement("div")
+    empty.className = "trk-activity-pr-empty"
+    empty.textContent = "Sin récords registrados aún."
+    prList.appendChild(empty)
+  }
+
+  prSection.appendChild(prList)
+  view.appendChild(prSection)
+
+  return view
+}
+
 function buildHistoryView(): HTMLElement {
   const view = document.createElement("div")
   view.className = "trk-view"
@@ -860,6 +1236,18 @@ export function renderWeek(): void {
   setActiveView("week")
 }
 
+export function renderActivity(): void {
+  if (!rootEl) return
+
+  const existing = document.getElementById("trk-view-activity")
+  if (existing) existing.remove()
+
+  const viewEl = buildActivityView()
+  rootEl.querySelector(".trk-body")?.appendChild(viewEl)
+
+  setActiveView("activity")
+}
+
 export function renderHistory(): void {
   if (!rootEl) return
 
@@ -875,7 +1263,7 @@ export function renderHistory(): void {
 function setActiveView(view: SubView): void {
   currentView = view
 
-  const views: SubView[] = ["log", "week", "history"]
+  const views: SubView[] = ["log", "week", "activity", "history"]
   for (const v of views) {
     const el = document.getElementById(`trk-view-${v}`)
     if (el) el.classList.toggle("active", v === view)
@@ -896,6 +1284,9 @@ function rerender(): void {
       break
     case "week":
       renderWeek()
+      break
+    case "activity":
+      renderActivity()
       break
     case "history":
       renderHistory()
@@ -989,6 +1380,7 @@ export function init(container: HTMLElement): void {
   const subnavItems: Array<{ label: string; view: SubView }> = [
     { label: "Registro", view: "log" },
     { label: "Semana", view: "week" },
+    { label: "Actividad", view: "activity" },
     { label: "Historial", view: "history" },
   ]
 
@@ -1007,6 +1399,9 @@ export function init(container: HTMLElement): void {
           break
         case "week":
           renderWeek()
+          break
+        case "activity":
+          renderActivity()
           break
         case "history":
           renderHistory()
@@ -1027,10 +1422,12 @@ export function init(container: HTMLElement): void {
   // Mount initial view
   const logView = buildLogView()
   const weekView = buildWeekView()
+  const activityView = buildActivityView()
   const histView = buildHistoryView()
 
   body.appendChild(logView)
   body.appendChild(weekView)
+  body.appendChild(activityView)
   body.appendChild(histView)
 
   setActiveView(currentView)

@@ -75,7 +75,7 @@ export class HashRouter {
     for (const section of sections) {
       const sectionTab = section.dataset["tab"]
       if (sectionTab === activeTab) {
-        section.style.display = ""
+        section.style.display = "block"
         section.removeAttribute("hidden")
       } else {
         section.style.display = "none"

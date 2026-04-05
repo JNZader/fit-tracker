@@ -936,7 +936,8 @@
     <nav class="nav">
       <div class="nav__brand">⚔ Tracker</div>
       <div class="nav__tabs">
-        <button class="nav__tab active" data-nav-tab="rutina">Rutina</button>
+        <button class="nav__tab active" data-nav-tab="inicio">Inicio</button>
+        <button class="nav__tab" data-nav-tab="rutina">Rutina</button>
         <button class="nav__tab" data-nav-tab="ejercicios">Ejercicios</button>
         <button class="nav__tab" data-nav-tab="sistema">Sistema</button>
         <button class="nav__tab" data-nav-tab="tracking">Tracking</button>
@@ -945,6 +946,11 @@
 
     <!-- App container -->
     <div id="app">
+      <!-- Tab: Inicio -->
+      <section id="tab-inicio" class="sec" data-tab="inicio">
+        <div id="inicio-root"></div>
+      </section>
+
       <!-- Tab: Rutina -->
       <section id="tab-rutina" class="sec" data-tab="rutina">
         <div id="rutina-root"></div>

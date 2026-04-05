@@ -5,7 +5,7 @@ import { AppState } from "@core/state"
 // --- Constants ---
 
 const VALID_TABS = Object.values(TAB_IDS) as TabId[]
-const DEFAULT_TAB: TabId = TAB_IDS.RUTINA
+const DEFAULT_TAB: TabId = TAB_IDS.INICIO
 
 // --- HashRouter singleton ---
 

@@ -39,6 +39,7 @@ export const SNAPSHOT_SOURCES = {
 } as const
 
 export const TAB_IDS = {
+  INICIO: "inicio",
   RUTINA: "rutina",
   EJERCICIOS: "ejercicios",
   SISTEMA: "sistema",

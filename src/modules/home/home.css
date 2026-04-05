@@ -1,0 +1,207 @@
+/* ============================================================
+   HOME — Smart Dashboard
+   ============================================================ */
+
+.home-status {
+  border-radius: var(--r-lg);
+  padding: var(--sp6) var(--sp5) var(--sp5);
+  margin-bottom: var(--sp4);
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.home-status--trained {
+  border-color: var(--green);
+  background: var(--green-bg);
+}
+
+.home-status--not-trained {
+  border-color: var(--accent-dim);
+  background: var(--card);
+  border-top: 3px solid var(--accent);
+}
+
+.home-status__label {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: var(--sp3);
+}
+
+.home-status--trained .home-status__label {
+  color: var(--green);
+}
+
+.home-status__sub {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: var(--sp4);
+}
+
+.home-status__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp3) var(--sp6);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  border-radius: var(--r);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--t);
+  width: 100%;
+  max-width: 320px;
+}
+
+.home-status__cta:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.home-status__cta--secondary {
+  background: transparent;
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.home-status__cta--secondary:hover {
+  background: var(--green-bg);
+  color: var(--white);
+  border-color: var(--green);
+}
+
+/* ── Meta grid ── */
+
+.home-meta {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp3);
+  margin-bottom: var(--sp4);
+}
+
+@media (max-width: 600px) {
+  .home-meta {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.home-stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp3);
+  text-align: center;
+}
+
+.home-stat__label {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: var(--sp1);
+}
+
+.home-stat__value {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--white);
+  margin-bottom: 3px;
+}
+
+.home-stat__sub {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+}
+
+/* ── Last session ── */
+
+.home-last {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp3) var(--sp4);
+  margin-bottom: var(--sp4);
+}
+
+.home-last__title {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--sp2);
+}
+
+.home-last__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp1) var(--sp4);
+  font-size: 0.88rem;
+  color: var(--text-dim);
+}
+
+.home-last__ex strong {
+  color: var(--white);
+}
+
+/* ── PRs ── */
+
+.home-prs {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp3) var(--sp4);
+}
+
+.home-prs__title {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--sp3);
+}
+
+.home-prs__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: var(--sp2);
+}
+
+.home-pr-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: var(--sp2) var(--sp3);
+  text-align: center;
+}
+
+.home-pr-card__name {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+
+.home-pr-card__value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1;
+}
+
+.home-pr-card__unit {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-left: 1px;
+}

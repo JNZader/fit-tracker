@@ -1,6 +1,7 @@
 // --- CSS imports ---
 import "@styles/tokens.css"
 import "@styles/base.css"
+import "@modules/home/home.css"
 import "@modules/timer/timer.css"
 import "@modules/tracking/tracking.css"
 import "@modules/pr-board/pr-board.css"
@@ -13,6 +14,7 @@ import { migrateFromLegacy } from "@core/storage"
 import type { Phase } from "@core/types"
 
 // --- Module imports ---
+import { init as initHome } from "@modules/home/home"
 import { init as initRutina } from "@modules/rutina/rutina"
 import { init as initEjercicios } from "@modules/ejercicios/ejercicios"
 import { init as initSistema } from "@modules/sistema/sistema"
@@ -141,6 +143,9 @@ function bootstrap(): void {
   wirePhaseModal()
 
   // 5. Init modules into their containers
+  const inicioRoot = document.getElementById("inicio-root")
+  if (inicioRoot) initHome(inicioRoot)
+
   const rutinaRoot = document.getElementById("rutina-root")
   if (rutinaRoot) initRutina(rutinaRoot)
 

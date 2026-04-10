@@ -5,6 +5,7 @@ import { EXERCISE_IDS, PAIN_ZONES } from "@core/types"
 import { detectPhaseAdvancement } from "@modules/phase/phase"
 import { IsometricTimer } from "@modules/timer/timer"
 import { destroyChart, renderWeeklyVolumeChart } from "./charts"
+import { init as initHeatmap } from "@modules/heatmap/heatmap"
 import "./tracking.css"
 
 // ---------------------------------------------------------------------------
@@ -195,7 +196,7 @@ function computeSemaphore(sessions: Record<string, SessionRecord>): SemaphoreRes
 // Module state
 // ---------------------------------------------------------------------------
 
-type SubView = "log" | "week" | "activity" | "history"
+type SubView = "log" | "week" | "activity" | "history" | "heatmap"
 
 let rootEl: HTMLElement | null = null
 let currentDate: string = todayISO()
@@ -1198,8 +1199,34 @@ function buildHistoryView(): HTMLElement {
 }
 
 // ---------------------------------------------------------------------------
+// Heatmap view
+// ---------------------------------------------------------------------------
+
+function buildHeatmapView(): HTMLElement {
+  const view = document.createElement("div")
+  view.className = "trk-view"
+  view.id = "trk-view-heatmap"
+
+  initHeatmap(view)
+
+  return view
+}
+
+// ---------------------------------------------------------------------------
 // Render functions
 // ---------------------------------------------------------------------------
+
+export function renderHeatmap(): void {
+  if (!rootEl) return
+
+  const existing = document.getElementById("trk-view-heatmap")
+  if (existing) existing.remove()
+
+  const viewEl = buildHeatmapView()
+  rootEl.querySelector(".trk-body")?.appendChild(viewEl)
+
+  setActiveView("heatmap")
+}
 
 export function renderLog(): void {
   if (!rootEl) return
@@ -1263,7 +1290,7 @@ export function renderHistory(): void {
 function setActiveView(view: SubView): void {
   currentView = view
 
-  const views: SubView[] = ["log", "week", "activity", "history"]
+  const views: SubView[] = ["log", "week", "activity", "history", "heatmap"]
   for (const v of views) {
     const el = document.getElementById(`trk-view-${v}`)
     if (el) el.classList.toggle("active", v === view)
@@ -1290,6 +1317,9 @@ function rerender(): void {
       break
     case "history":
       renderHistory()
+      break
+    case "heatmap":
+      renderHeatmap()
       break
   }
 }
@@ -1382,6 +1412,7 @@ export function init(container: HTMLElement): void {
     { label: "Semana", view: "week" },
     { label: "Actividad", view: "activity" },
     { label: "Historial", view: "history" },
+    { label: "🔥 Mapa", view: "heatmap" },
   ]
 
   for (const item of subnavItems) {
@@ -1406,6 +1437,9 @@ export function init(container: HTMLElement): void {
         case "history":
           renderHistory()
           break
+        case "heatmap":
+          renderHeatmap()
+          break
       }
     })
 
@@ -1424,11 +1458,13 @@ export function init(container: HTMLElement): void {
   const weekView = buildWeekView()
   const activityView = buildActivityView()
   const histView = buildHistoryView()
+  const heatmapView = buildHeatmapView()
 
   body.appendChild(logView)
   body.appendChild(weekView)
   body.appendChild(activityView)
   body.appendChild(histView)
+  body.appendChild(heatmapView)
 
   setActiveView(currentView)
 

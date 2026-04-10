@@ -6,6 +6,7 @@ import "@modules/timer/timer.css"
 import "@modules/tracking/tracking.css"
 import "@modules/pr-board/pr-board.css"
 import "@modules/export/export.css"
+import "@modules/heatmap/heatmap.css"
 
 // --- Core imports ---
 import { HashRouter } from "@core/router"

@@ -1,0 +1,195 @@
+/* ---------------------------------------------------------------------------
+ * Heatmap module styles
+ * --------------------------------------------------------------------------- */
+
+/* --- Container layout --- */
+
+.heatmap-container {
+  display: flex;
+  gap: var(--space-5);
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: var(--space-4) 0;
+}
+
+.heatmap-body {
+  width: 180px;
+  max-width: 45%;
+}
+
+.heatmap-label {
+  fill: var(--text-dim);
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* --- Muscle heat levels --- */
+
+.muscle {
+  transition: fill 300ms ease, opacity 300ms ease;
+  cursor: pointer;
+}
+
+.muscle--heat-0 {
+  fill: var(--heat-none);
+  opacity: 0.1;
+}
+
+.muscle--heat-1 {
+  fill: var(--heat-low);
+  opacity: 0.4;
+}
+
+.muscle--heat-2 {
+  fill: var(--heat-moderate);
+  opacity: 0.6;
+}
+
+.muscle--heat-3 {
+  fill: var(--heat-high);
+  opacity: 0.8;
+}
+
+.muscle--heat-4 {
+  fill: var(--heat-intense);
+  opacity: 1;
+}
+
+.muscle:hover {
+  stroke: var(--white);
+  stroke-width: 1.5;
+}
+
+/* --- Toggle buttons (Charts / Muscle Map) --- */
+
+.heatmap-toggle {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  padding: var(--space-1);
+  background: var(--bg2);
+  border-radius: var(--radius);
+  width: fit-content;
+}
+
+.heatmap-toggle__btn {
+  padding: var(--space-2) var(--space-4);
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+}
+
+.heatmap-toggle__btn:hover {
+  color: var(--text);
+}
+
+.heatmap-toggle__btn.active {
+  color: var(--accent);
+  background: var(--bg3);
+}
+
+/* --- Imbalance indicators --- */
+
+.imbalance-section {
+  margin-top: var(--space-4);
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  background: var(--bg2);
+}
+
+.imbalance-section__title {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-bottom: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.imbalance-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  margin: var(--space-1);
+}
+
+.imbalance-indicator--over {
+  background: var(--red-bg);
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+
+.imbalance-indicator--under {
+  background: var(--blue-bg);
+  color: var(--blue);
+  border: 1px solid var(--blue);
+}
+
+/* --- Region summary --- */
+
+.region-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.region-summary__card {
+  padding: var(--space-3);
+  background: var(--bg2);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.region-summary__label {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--space-1);
+}
+
+.region-summary__value {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.region-summary__detail {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: var(--space-1);
+}
+
+/* --- Empty state --- */
+
+.heatmap-empty {
+  text-align: center;
+  padding: var(--space-7) var(--space-4);
+  color: var(--text-dim);
+  font-family: var(--font-body);
+}
+
+.heatmap-empty__icon {
+  font-size: 2rem;
+  margin-bottom: var(--space-2);
+}
+
+.heatmap-empty__text {
+  font-size: 0.9rem;
+}

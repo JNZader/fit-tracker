@@ -59,4 +59,11 @@
 
   /* Transitions */
   --transition: 150ms ease;
+
+  /* Heatmap colors */
+  --heat-none: #374151;
+  --heat-low: #3b82f6;
+  --heat-moderate: #22c55e;
+  --heat-high: #f59e0b;
+  --heat-intense: #ef4444;
 }

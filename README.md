@@ -7,22 +7,21 @@
 > Track workouts, visualize muscle engagement, hit PRs, and progress through a 4-phase calisthenics system — all with zero framework overhead.
 
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen?style=for-the-badge)](https://fit-tracker-6ce.pages.dev)
-[![Deploy](https://img.shields.io/badge/deploy-Cloudflare%20Pages-F38020?logo=cloudflare&logoColor=white)](#)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript&logoColor=white)](#)
-[![Vite](https://img.shields.io/badge/Vite-5.0-646CFF?logo=vite&logoColor=white)](#)
-[![Bun](https://img.shields.io/badge/Bun-runtime-FBF0DF?logo=bun&logoColor=black)](#)
-[![Biome](https://img.shields.io/badge/Biome-linter-60A5FA?logo=biome&logoColor=white)](#)
+![Deploy](https://img.shields.io/badge/deploy-Cloudflare%20Pages-F38020?logo=cloudflare&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5.0-646CFF?logo=vite&logoColor=white)
+![Bun](https://img.shields.io/badge/Bun-runtime-FBF0DF?logo=bun&logoColor=black)
+![Biome](https://img.shields.io/badge/Biome-linter-60A5FA?logo=biome&logoColor=white)
 
 </div>
 
 ---
 
-<!-- TODO: Add hero screenshot/GIF here — dashboard overview -->
-<!-- Recommended: 800x450 animated GIF showing heatmap + charts + timer -->
-
 ## 🚀 Live Demo
 
 **[fit-tracker-6ce.pages.dev](https://fit-tracker-6ce.pages.dev)** — Deployed on Cloudflare Pages with automatic CI/CD.
+
+Visual note: this README keeps the walkthrough text-first; the live demo is the best place to see the dashboard, heatmap, and timer in motion.
 
 ---
 
@@ -47,15 +46,11 @@ This project deliberately uses **vanilla TypeScript + DOM API + CSS custom prope
 - **Multi-round session logging** — reps/duration per round, RPE (1-10), feeling scale, pain tracking, notes
 - **Weekly volume charts** — last 6 weeks of total reps via Chart.js
 
-<!-- TODO: Add screenshot/GIF here — workout session logging -->
-
 ### 🗺️ Muscle Heatmap Analysis
 - **36-muscle taxonomy** — chest, shoulders, arms, back, core, hips, legs
 - **Exercise-to-muscle mapping** — each exercise loads specific muscles with weighted contributions
 - **Imbalance detection** — over-trained, under-trained, and balanced region identification
 - **SVG body visualization** — color-coded heat intensity (4 levels) with weekly trends
-
-<!-- TODO: Add screenshot/GIF here — muscle heatmap visualization -->
 
 ### 🏆 Personal Records
 - **Automatic PR detection** on every session save (pure function)
@@ -66,8 +61,6 @@ This project deliberately uses **vanilla TypeScript + DOM API + CSS custom prope
 - **RAF-based countdown** — 60 Hz refresh for smooth display
 - **Web Audio API beep** — 880 Hz sine wave on completion
 - **Per-round progress tracking** with localStorage persistence
-
-<!-- TODO: Add screenshot/GIF here — timer in action -->
 
 ### 📈 Phase Advancement
 - **Automatic detection** when exit criteria are met (pure function)
@@ -81,6 +74,13 @@ This project deliberately uses **vanilla TypeScript + DOM API + CSS custom prope
 - **Legacy migration** — automatic `mil-tracker-v3` → `workout-app-v1` on first load
 
 ---
+
+## Technical Reference
+
+- [Architecture](#-architecture)
+- [Running Locally](#-running-locally)
+- [Phase Exit Criteria](#-phase-exit-criteria)
+- [Design System](#-design-system)
 
 ## 🛠️ Tech Stack
 
@@ -153,17 +153,6 @@ src/
 
 ---
 
-## 🎨 Design System
-
-Dark military theme with semantic color tokens:
-
-- **Typography** — Oswald (display/uppercase), Source Sans Pro (body), SF Mono (data)
-- **Colors** — blacks/golds/grays with semantic accents (green/success, blue/info, red/danger)
-- **Spacing** — 4px → 64px scale (8 steps)
-- **Components** — cards (`.cd`), tables (`.tb`), phase pills (`.ph`), toasts, modals
-
----
-
 ## 🏃 Running Locally
 
 ```bash
@@ -174,6 +163,17 @@ bun run lint             # Biome check
 bun run format           # Biome format
 bun test                 # Run test suite
 ```
+
+---
+
+## 🎨 Design System
+
+Dark military theme with semantic color tokens:
+
+- **Typography** — Oswald (display/uppercase), Source Sans Pro (body), SF Mono (data)
+- **Colors** — blacks/golds/grays with semantic accents (green/success, blue/info, red/danger)
+- **Spacing** — 4px → 64px scale (8 steps)
+- **Components** — cards (`.cd`), tables (`.tb`), phase pills (`.ph`), toasts, modals
 
 ---
 

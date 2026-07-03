@@ -1,13 +1,7 @@
+import { AppState } from "@core/state"
+import { createAndPrependSnapshot, loadData, loadStore, rollback, saveData } from "@core/storage"
 import type { AppData, Snapshot } from "@core/types"
 import { AppDataSchema } from "@core/types"
-import { AppState } from "@core/state"
-import {
-  createAndPrependSnapshot,
-  loadData,
-  loadStore,
-  rollback,
-  saveData,
-} from "@core/storage"
 
 // --- Export ---
 
@@ -45,9 +39,7 @@ export function exportData(): void {
  * Reads a JSON file, validates against AppDataSchema, creates a pre-import
  * snapshot and saves new data if valid.
  */
-export async function importData(
-  file: File
-): Promise<{ ok: boolean; error?: string }> {
+export async function importData(file: File): Promise<{ ok: boolean; error?: string }> {
   let text: string
 
   try {
@@ -198,7 +190,10 @@ export function init(container: HTMLElement): void {
     // --- Create manual snapshot ---
     const btnSnapshot = container.querySelector<HTMLButtonElement>("#btn-snapshot")
     btnSnapshot?.addEventListener("click", () => {
-      const label = window.prompt("Nombre del punto de restauración:", `Manual ${new Date().toISOString().slice(0, 10)}`)
+      const label = window.prompt(
+        "Nombre del punto de restauración:",
+        `Manual ${new Date().toISOString().slice(0, 10)}`,
+      )
       if (label === null) return // cancelled
 
       const currentData = loadData()
@@ -209,12 +204,14 @@ export function init(container: HTMLElement): void {
     })
 
     // --- Restore buttons ---
-    container.querySelectorAll<HTMLButtonElement>(".btn-restore").forEach((btn) => {
+    for (const btn of container.querySelectorAll<HTMLButtonElement>(".btn-restore")) {
       btn.addEventListener("click", () => {
-        const id = btn.dataset["id"]
+        const id = btn.dataset.id
         if (!id) return
 
-        const confirmed = window.confirm("¿Restaurar este punto? El estado actual se guardará como snapshot previo.")
+        const confirmed = window.confirm(
+          "¿Restaurar este punto? El estado actual se guardará como snapshot previo.",
+        )
         if (!confirmed) return
 
         try {
@@ -236,7 +233,7 @@ export function init(container: HTMLElement): void {
           }
         }
       })
-    })
+    }
   }
 
   // Initial render

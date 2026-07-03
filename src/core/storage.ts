@@ -29,11 +29,7 @@ export function pruneSnapshots(snapshots: Snapshot[], max: number): Snapshot[] {
   return snapshots.slice(snapshots.length - max)
 }
 
-export function createSnapshot(
-  data: AppData,
-  label: string,
-  source: Snapshot["source"]
-): Snapshot {
+export function createSnapshot(data: AppData, label: string, source: Snapshot["source"]): Snapshot {
   return {
     id: generateId(),
     timestamp: new Date().toISOString(),
@@ -84,14 +80,14 @@ export function migrateFromLegacy(): AppData | null {
       parsed.sessions !== null &&
       !Array.isArray(parsed.sessions)
     ) {
-      empty.sessions = parsed.sessions as Record<string, { date: string; exercises: Partial<Record<ExerciseId, number[]>> }>
+      empty.sessions = parsed.sessions as Record<
+        string,
+        { date: string; exercises: Partial<Record<ExerciseId, number[]>> }
+      >
     }
 
     // Try to recover currentPhase
-    if (
-      typeof parsed.currentPhase === "number" &&
-      [1, 2, 3, 4].includes(parsed.currentPhase)
-    ) {
+    if (typeof parsed.currentPhase === "number" && [1, 2, 3, 4].includes(parsed.currentPhase)) {
       empty.currentPhase = parsed.currentPhase as Phase
     }
 
@@ -118,9 +114,7 @@ export function loadStore(): VersionedStore {
   const legacyData = migrateFromLegacy()
   const initialData = legacyData ?? emptyAppData()
 
-  const label = legacyData
-    ? "Migrado desde versión anterior"
-    : "Estado inicial"
+  const label = legacyData ? "Migrado desde versión anterior" : "Estado inicial"
 
   const initialSnapshot = createSnapshot(initialData, label, "manual")
   const store: VersionedStore = {
@@ -172,7 +166,7 @@ export function saveData(data: AppData): void {
 export function createAndPrependSnapshot(
   data: AppData,
   label: string,
-  source: Snapshot["source"]
+  source: Snapshot["source"],
 ): Snapshot {
   const store = loadStore()
   const snapshot = createSnapshot(data, label, source)
@@ -193,11 +187,7 @@ export function rollback(snapshotId: string): void {
   const currentHeadSnapshot = store.snapshots.find((s) => s.id === store.head)
   const currentData = currentHeadSnapshot?.data ?? emptyAppData()
 
-  const preRollbackSnapshot = createSnapshot(
-    currentData,
-    "Pre-rollback automático",
-    "manual"
-  )
+  const preRollbackSnapshot = createSnapshot(currentData, "Pre-rollback automático", "manual")
   store.snapshots.push(preRollbackSnapshot)
 
   // 2. Verify target snapshot exists

@@ -1,15 +1,15 @@
 import { describe, expect, it } from "bun:test"
+import { EXERCISE_IDS, type ExerciseId } from "@core/types"
 import {
   EXERCISE_MUSCLE_MAP,
-  MUSCLE_IDS,
   MUSCLES,
+  MUSCLE_IDS,
   type MuscleActivation,
   type MuscleId,
   getAllMuscleGroups,
   getExercisesForMuscle,
   getMusclesForExercise,
 } from "./muscle-map"
-import { EXERCISE_IDS, type ExerciseId } from "@core/types"
 
 // ---------------------------------------------------------------------------
 // MUSCLE_IDS
@@ -39,14 +39,7 @@ describe("MUSCLES", () => {
   })
 
   it("every muscle has a body region", () => {
-    const validRegions = [
-      "chest",
-      "back",
-      "arms",
-      "legs",
-      "core",
-      "shoulders",
-    ]
+    const validRegions = ["chest", "back", "arms", "legs", "core", "shoulders"]
     for (const info of Object.values(MUSCLES)) {
       expect(validRegions).toContain(info.region)
     }

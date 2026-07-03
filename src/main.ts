@@ -14,23 +14,20 @@ import { AppState } from "@core/state"
 import { migrateFromLegacy } from "@core/storage"
 import type { Phase } from "@core/types"
 
+import { init as initEjercicios } from "@modules/ejercicios/ejercicios"
+import { init as initExport } from "@modules/export/export"
 // --- Module imports ---
 import { init as initHome } from "@modules/home/home"
+import { init as initPRBoard } from "@modules/pr-board/pr-board"
 import { init as initRutina } from "@modules/rutina/rutina"
-import { init as initEjercicios } from "@modules/ejercicios/ejercicios"
 import { init as initSistema } from "@modules/sistema/sistema"
 import { init as initTracking } from "@modules/tracking/tracking"
-import { init as initPRBoard } from "@modules/pr-board/pr-board"
-import { init as initExport } from "@modules/export/export"
 
 // ---------------------------------------------------------------------------
 // Toast notifications
 // ---------------------------------------------------------------------------
 
-export function showToast(
-  message: string,
-  type: "success" | "warning" | "info" = "info",
-): void {
+export function showToast(message: string, type: "success" | "warning" | "info" = "info"): void {
   const container = document.getElementById("toast-container")
   if (!container) return
 
@@ -113,14 +110,14 @@ function wirePhaseModal(): void {
 
 function wireNavTabs(): void {
   const router = HashRouter.getInstance()
-  document.querySelectorAll<HTMLButtonElement>("[data-nav-tab]").forEach((btn) => {
+  for (const btn of document.querySelectorAll<HTMLButtonElement>("[data-nav-tab]")) {
     btn.addEventListener("click", () => {
-      const tab = btn.dataset["navTab"]
+      const tab = btn.dataset.navTab
       if (tab) {
         router.navigateTo(tab as Parameters<typeof router.navigateTo>[0])
       }
     })
-  })
+  }
 }
 
 // ---------------------------------------------------------------------------

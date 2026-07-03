@@ -389,7 +389,8 @@ function renderAdvancementSection(currentPhase: Phase): string {
   const phaseLabel = PHASE_LABELS[currentPhase]
   const nextPhase = currentPhase < 4 ? currentPhase + 1 : null
 
-  const exitCriteriaHtml = PHASE_EXIT_CRITERIA_HTML[currentPhase] ?? "<p>Sin criterios de salida.</p>"
+  const exitCriteriaHtml =
+    PHASE_EXIT_CRITERIA_HTML[currentPhase] ?? "<p>Sin criterios de salida.</p>"
 
   const advanceBtn = nextPhase
     ? `<button id="btn-advance-phase" class="btn btn--primary btn--lg" style="margin-top:var(--sp4)">

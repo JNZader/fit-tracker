@@ -171,7 +171,7 @@ function toISODate(date: Date): string {
  */
 function getSessionsByWeek(
   sessions: Record<string, SessionRecord>,
-  weeksBack: number
+  weeksBack: number,
 ): Map<string, SessionRecord[]> {
   const now = new Date()
   const thisWeekStart = startOfWeek(now)
@@ -207,7 +207,7 @@ function getSessionsByWeek(
 export function getConsistencyPercent(
   sessions: Record<string, SessionRecord>,
   weeksBack: number,
-  targetDaysPerWeek: number
+  targetDaysPerWeek: number,
 ): number {
   if (weeksBack <= 0) return 0
 
@@ -230,7 +230,7 @@ export function getConsistencyPercent(
 function exerciseMeetsRequirement(
   sessionsByWeek: Map<string, SessionRecord[]>,
   exerciseId: ExerciseId,
-  minValue: number
+  minValue: number,
 ): boolean {
   // Collect all sessions from all weeks
   const allSessions: SessionRecord[] = []
@@ -241,9 +241,7 @@ function exerciseMeetsRequirement(
   if (allSessions.length === 0) return false
 
   // Every session that contains this exercise must meet the minimum
-  const sessionsWithExercise = allSessions.filter(
-    (s) => s.exercises[exerciseId] !== undefined
-  )
+  const sessionsWithExercise = allSessions.filter((s) => s.exercises[exerciseId] !== undefined)
 
   if (sessionsWithExercise.length === 0) return false
 
@@ -262,7 +260,7 @@ function exerciseMeetsRequirement(
  */
 export function detectPhaseAdvancement(
   sessions: Record<string, SessionRecord>,
-  currentPhase: Phase
+  currentPhase: Phase,
 ): Phase | null {
   const config = getPhaseConfig(currentPhase)
   if (!config) return null // Phase 4 has no exit
@@ -272,11 +270,7 @@ export function detectPhaseAdvancement(
   // 1. Check consistency across the required window
   // Target: at least 3 days/week (reasonable training frequency)
   const TARGET_DAYS_PER_WEEK = 3
-  const actualConsistency = getConsistencyPercent(
-    sessions,
-    consistencyWeeks,
-    TARGET_DAYS_PER_WEEK
-  )
+  const actualConsistency = getConsistencyPercent(sessions, consistencyWeeks, TARGET_DAYS_PER_WEEK)
 
   if (actualConsistency < consistencyPercent) return null
 

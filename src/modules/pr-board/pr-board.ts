@@ -1,6 +1,6 @@
+import { AppState } from "@core/state"
 import type { ExerciseId, ExerciseUnit, PRRecord } from "@core/types"
 import { EXERCISE_IDS, EXERCISE_UNITS } from "@core/types"
-import { AppState } from "@core/state"
 
 // --- Exercise display config ---
 
@@ -29,10 +29,10 @@ const ALL_EXERCISES: ExerciseId[] = [
  * the best value in `newRounds` exceeds all existing PRs, otherwise null.
  */
 export function runPRDetection(
-  exerciseId: ExerciseId,
+  _exerciseId: ExerciseId,
   newRounds: number[],
   existingPRs: PRRecord[],
-  unit: ExerciseUnit
+  unit: ExerciseUnit,
 ): PRRecord | null {
   if (newRounds.length === 0) return null
 
@@ -40,9 +40,7 @@ export function runPRDetection(
   if (bestValue <= 0) return null
 
   // Check against all existing PRs
-  const currentBest = existingPRs.length > 0
-    ? Math.max(...existingPRs.map((r) => r.value))
-    : 0
+  const currentBest = existingPRs.length > 0 ? Math.max(...existingPRs.map((r) => r.value)) : 0
 
   if (bestValue <= currentBest) return null
 
@@ -91,15 +89,17 @@ function renderSparkline(records: PRRecord[]): string {
   const totalBars = last5.length
   const viewW = totalBars * (BAR_WIDTH + BAR_GAP) - BAR_GAP
 
-  const bars = values.map((v, i) => {
-    const barH = Math.max(3, Math.round(((v - min) / range) * (HEIGHT - 4)) + 3)
-    const x = i * (BAR_WIDTH + BAR_GAP)
-    const y = HEIGHT - barH
-    const isMax = v === max
-    return `<rect x="${x}" y="${y}" width="${BAR_WIDTH}" height="${barH}"
+  const bars = values
+    .map((v, i) => {
+      const barH = Math.max(3, Math.round(((v - min) / range) * (HEIGHT - 4)) + 3)
+      const x = i * (BAR_WIDTH + BAR_GAP)
+      const y = HEIGHT - barH
+      const isMax = v === max
+      return `<rect x="${x}" y="${y}" width="${BAR_WIDTH}" height="${barH}"
       rx="1" fill="${isMax ? "var(--accent)" : "var(--bg3)"}"
       stroke="${isMax ? "var(--accent)" : "var(--border)"}" stroke-width="0.5"/>`
-  }).join("")
+    })
+    .join("")
 
   return `<svg class="pr-sparkline" viewBox="0 0 ${viewW} ${HEIGHT}" aria-hidden="true">${bars}</svg>`
 }
@@ -111,18 +111,18 @@ function renderCard(exerciseId: ExerciseId, prs: PRRecord[]): string {
   const unit = EXERCISE_UNIT_MAP[exerciseId]
   const uLabel = unitLabel(unit)
 
-  const currentPR = prs.length > 0
-    ? Math.max(...prs.map((r) => r.value))
-    : null
+  const currentPR = prs.length > 0 ? Math.max(...prs.map((r) => r.value)) : null
 
   const last5 = prs.slice(-5)
   const historyItems = last5
     .slice()
     .reverse()
-    .map((r) => `<li class="pr-history-item">
+    .map(
+      (r) => `<li class="pr-history-item">
       <span class="pr-history-date">${r.date}</span>
       <span class="pr-history-value">${r.value} ${uLabel}</span>
-    </li>`)
+    </li>`,
+    )
     .join("")
 
   return `<div class="pr-card" data-exercise="${exerciseId}">
@@ -153,14 +153,14 @@ export function init(container: HTMLElement): void {
     container.innerHTML = `<div class="pr-grid">${cards}</div>`
 
     // Bind reset buttons
-    container.querySelectorAll<HTMLButtonElement>(".pr-reset-btn").forEach((btn) => {
+    for (const btn of container.querySelectorAll<HTMLButtonElement>(".pr-reset-btn")) {
       btn.addEventListener("click", () => {
-        const exerciseId = btn.dataset["exercise"] as ExerciseId | undefined
+        const exerciseId = btn.dataset.exercise as ExerciseId | undefined
         if (!exerciseId) return
 
         const exerciseLabel = EXERCISE_LABELS[exerciseId] ?? exerciseId
         const confirmed = window.confirm(
-          `¿Resetear el PR de ${exerciseLabel}? Esta acción no se puede deshacer.`
+          `¿Resetear el PR de ${exerciseLabel}? Esta acción no se puede deshacer.`,
         )
         if (!confirmed) return
 
@@ -170,7 +170,7 @@ export function init(container: HTMLElement): void {
 
         render()
       })
-    })
+    }
   }
 
   // Initial render

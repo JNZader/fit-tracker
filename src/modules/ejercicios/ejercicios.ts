@@ -1,7 +1,7 @@
 import { AppState } from "@core/state"
+import { loadData } from "@core/storage"
 import type { ExerciseId, Phase } from "@core/types"
 import { EXERCISE_IDS } from "@core/types"
-import { loadData } from "@core/storage"
 import { IsometricTimer } from "@modules/timer/timer"
 
 // ---------------------------------------------------------------------------
@@ -51,10 +51,7 @@ const CALENTAMIENTO_EXERCISES: ExerciseDetail[] = [
       "Rango completo de movimiento",
       "Respiración normal",
     ],
-    dontList: [
-      "Movimientos bruscos",
-      "Ignorar dolor o crepitación",
-    ],
+    dontList: ["Movimientos bruscos", "Ignorar dolor o crepitación"],
     progression: [
       "Velocidad: comenzar lento, acelerar",
       "Agregar carga progresiva con peso ligero",
@@ -72,18 +69,9 @@ const CALENTAMIENTO_EXERCISES: ExerciseDetail[] = [
       "Luego hacia atrás 10 veces",
       "Aumentá el rango progresivamente",
     ],
-    doList: [
-      "Rango completo de movimiento",
-      "Movimiento sincronizado de ambos hombros",
-    ],
-    dontList: [
-      "Elevar el cuello al rotar",
-      "Arquearse hacia atrás",
-    ],
-    progression: [
-      "Brazos extendidos para mayor palanca",
-      "Integrar con movimiento de torso",
-    ],
+    doList: ["Rango completo de movimiento", "Movimiento sincronizado de ambos hombros"],
+    dontList: ["Elevar el cuello al rotar", "Arquearse hacia atrás"],
+    progression: ["Brazos extendidos para mayor palanca", "Integrar con movimiento de torso"],
   },
   {
     id: "rotaciones-cadera",
@@ -96,17 +84,9 @@ const CALENTAMIENTO_EXERCISES: ExerciseDetail[] = [
       "Manos en caderas",
       "Círculos amplios con la pelvis, 10 × lado",
     ],
-    doList: [
-      "Círculo completo y fluido",
-      "Rodillas ligeramente flexionadas",
-    ],
-    dontList: [
-      "Mover los hombros excesivamente",
-      "Bloquear las rodillas",
-    ],
-    progression: [
-      "Agregar rotación de torso simultánea",
-    ],
+    doList: ["Círculo completo y fluido", "Rodillas ligeramente flexionadas"],
+    dontList: ["Mover los hombros excesivamente", "Bloquear las rodillas"],
+    progression: ["Agregar rotación de torso simultánea"],
   },
   {
     id: "cat-cow",
@@ -125,14 +105,8 @@ const CALENTAMIENTO_EXERCISES: ExerciseDetail[] = [
       "Movimiento segmento por segmento",
       "Rango completo sin forzar",
     ],
-    dontList: [
-      "Apoyar cargas en las muñecas doloridas",
-      "Movimiento brusco o sin control",
-    ],
-    progression: [
-      "Agregar pausa de 2s en cada extremo",
-      "Thread the needle: rotación de columna",
-    ],
+    dontList: ["Apoyar cargas en las muñecas doloridas", "Movimiento brusco o sin control"],
+    progression: ["Agregar pausa de 2s en cada extremo", "Thread the needle: rotación de columna"],
   },
   {
     id: "marcha-lugar",
@@ -151,10 +125,7 @@ const CALENTAMIENTO_EXERCISES: ExerciseDetail[] = [
       "Aterrizar suavemente en el mediopié",
       "Mantener torso erguido",
     ],
-    dontList: [
-      "Inclinar el torso hacia adelante",
-      "Golpear con el talón fuerte",
-    ],
+    dontList: ["Inclinar el torso hacia adelante", "Golpear con el talón fuerte"],
     progression: [
       "Aumentar elevación de rodilla",
       "Agregar braceo con pesas ligeras",
@@ -173,18 +144,9 @@ const CALENTAMIENTO_EXERCISES: ExerciseDetail[] = [
       "Elevar caderas hasta alinear rodillas-caderas-hombros",
       "Pausa breve arriba, bajar controlado",
     ],
-    doList: [
-      "Presionar los talones contra el suelo",
-      "Mantener rodillas alineadas con los pies",
-    ],
-    dontList: [
-      "Hiperlordosis lumbar arriba",
-      "Rodillas que colapsan hacia adentro",
-    ],
-    progression: [
-      "Aumentar la pausa en la cima",
-      "Versión unilateral",
-    ],
+    doList: ["Presionar los talones contra el suelo", "Mantener rodillas alineadas con los pies"],
+    dontList: ["Hiperlordosis lumbar arriba", "Rodillas que colapsan hacia adentro"],
+    progression: ["Aumentar la pausa en la cima", "Versión unilateral"],
   },
 ]
 
@@ -209,7 +171,7 @@ const CIRCUITO_EXERCISES: ExerciseDetail[] = [
       "Mirada al suelo (cuello neutro)",
     ],
     dontList: [
-      "Cadera elevada (\"carpita\")",
+      'Cadera elevada ("carpita")',
       "Cadera hundida (caída lumbar)",
       "Codos abiertos a 90° (lesión de hombro)",
       "Medio rango de movimiento",
@@ -446,7 +408,7 @@ const CIRCUITO_EXERCISES: ExerciseDetail[] = [
       "Tumbado boca arriba, brazos extendidos arriba de la cabeza",
       "Comprimir el core y presionar la zona lumbar al suelo",
       "Elevar hombros, brazos y piernas ligeramente del suelo",
-      "Posición de \"banana invertida\" — sin arquear la espalda",
+      'Posición de "banana invertida" — sin arquear la espalda',
       "Mantener la posición con respiración controlada",
     ],
     doList: [
@@ -481,13 +443,8 @@ const ENFRIAMIENTO_EXERCISES: ExerciseDetail[] = [
       "Girar el cuerpo hacia el lado opuesto",
       "Mantener 30–45 segundos por lado",
     ],
-    doList: [
-      "Sensación de estiramiento, no dolor",
-      "Respiración profunda",
-    ],
-    dontList: [
-      "Forzar el estiramiento con rebotes",
-    ],
+    doList: ["Sensación de estiramiento, no dolor", "Respiración profunda"],
+    dontList: ["Forzar el estiramiento con rebotes"],
     progression: [
       "Bajar el brazo (estira porción clavicular)",
       "Subir el brazo (estira porción esternal)",
@@ -505,17 +462,9 @@ const ENFRIAMIENTO_EXERCISES: ExerciseDetail[] = [
       "Empujar cadera hacia adelante suavemente",
       "30–45 segundos, cambiar lado",
     ],
-    doList: [
-      "Pelvis en posición neutra (no en anteversión)",
-      "Torso erguido",
-    ],
-    dontList: [
-      "Arquear excesivamente la zona lumbar",
-    ],
-    progression: [
-      "Brazo del lado de atrás extendido arriba",
-      "Agregar rotación leve del torso",
-    ],
+    doList: ["Pelvis en posición neutra (no en anteversión)", "Torso erguido"],
+    dontList: ["Arquear excesivamente la zona lumbar"],
+    progression: ["Brazo del lado de atrás extendido arriba", "Agregar rotación leve del torso"],
   },
   {
     id: "isquiotibiales",
@@ -533,10 +482,7 @@ const ENFRIAMIENTO_EXERCISES: ExerciseDetail[] = [
       "Espalda relativamente recta al inclinarse",
       "Punta del pie neutra o levemente hacia ti",
     ],
-    dontList: [
-      "Redondear completamente la espalda",
-      "Rebotes (stretching balístico)",
-    ],
+    dontList: ["Redondear completamente la espalda", "Rebotes (stretching balístico)"],
     progression: [
       "Banda elástica en el pie para más rango",
       "Estiramiento activo: contracciones cortas",
@@ -558,13 +504,8 @@ const ENFRIAMIENTO_EXERCISES: ExerciseDetail[] = [
       "Rodillas alineadas (no adelantar la rodilla a estirar)",
       "Activar el glúteo del mismo lado",
     ],
-    dontList: [
-      "Inclinar excesivamente el torso",
-      "Separar las rodillas lateralmente",
-    ],
-    progression: [
-      "Tumbado de lado para mayor estiramiento",
-    ],
+    dontList: ["Inclinar excesivamente el torso", "Separar las rodillas lateralmente"],
+    progression: ["Tumbado de lado para mayor estiramiento"],
   },
   {
     id: "respiracion-diafragmatica",
@@ -585,10 +526,7 @@ const ENFRIAMIENTO_EXERCISES: ExerciseDetail[] = [
       "Exhalar completamente",
       "Ambiente tranquilo si es posible",
     ],
-    dontList: [
-      "Forzar la respiración",
-      "Tensionar hombros al inhalar",
-    ],
+    dontList: ["Forzar la respiración", "Tensionar hombros al inhalar"],
     progression: [
       "4-7-8: inhalar 4, retener 7, exhalar 8",
       "Integrar en la práctica diaria fuera del entrenamiento",
@@ -615,9 +553,7 @@ function renderTimerButton(ex: ExerciseDetail, currentPhase: Phase): string {
 }
 
 function renderExerciseItem(ex: ExerciseDetail, currentPhase: Phase): string {
-  const techHtml = ex.technique
-    .map((step, i) => `<li>${i + 1}. ${step}</li>`)
-    .join("")
+  const techHtml = ex.technique.map((step, i) => `<li>${i + 1}. ${step}</li>`).join("")
 
   const doHtml = ex.doList.map((d) => `<li style="color:var(--green)">✓ ${d}</li>`).join("")
   const dontHtml = ex.dontList.map((d) => `<li style="color:var(--red)">✗ ${d}</li>`).join("")
@@ -682,10 +618,10 @@ function renderGroup(title: string, exercises: ExerciseDetail[], currentPhase: P
 // ---------------------------------------------------------------------------
 
 function wireTimers(container: HTMLElement): void {
-  container.querySelectorAll<HTMLButtonElement>("[data-timer-exercise]").forEach((btn) => {
+  for (const btn of container.querySelectorAll<HTMLButtonElement>("[data-timer-exercise]")) {
     btn.addEventListener("click", () => {
-      const exerciseId = btn.dataset["timerExercise"] as ExerciseId
-      const secs = Number(btn.dataset["timerSecs"])
+      const exerciseId = btn.dataset.timerExercise as ExerciseId
+      const secs = Number(btn.dataset.timerSecs)
       if (!exerciseId || !secs) return
 
       const displayEl = container.querySelector<HTMLElement>(`#timer-display-${exerciseId}`)
@@ -725,7 +661,7 @@ function wireTimers(container: HTMLElement): void {
         { once: true },
       )
     })
-  })
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -733,9 +669,9 @@ function wireTimers(container: HTMLElement): void {
 // ---------------------------------------------------------------------------
 
 function wireAccordions(container: HTMLElement): void {
-  container.querySelectorAll<HTMLButtonElement>("[data-accordion]").forEach((trigger) => {
+  for (const trigger of container.querySelectorAll<HTMLButtonElement>("[data-accordion]")) {
     trigger.addEventListener("click", () => {
-      const id = trigger.dataset["accordion"]
+      const id = trigger.dataset.accordion
       if (!id) return
 
       const body = container.querySelector<HTMLElement>(`#body-${id}`)
@@ -751,7 +687,7 @@ function wireAccordions(container: HTMLElement): void {
         trigger.classList.add("open")
       }
     })
-  })
+  }
 }
 
 // ---------------------------------------------------------------------------

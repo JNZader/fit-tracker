@@ -1,4 +1,4 @@
-import type { SessionRecord, ExerciseId } from "@core/types"
+import type { ExerciseId, SessionRecord } from "@core/types"
 import {
   EXERCISE_MUSCLE_MAP,
   MUSCLES,
@@ -147,10 +147,7 @@ export function detectImbalances(
   const balanced: MuscleId[] = []
 
   // Collect all muscles that appear in either map
-  const allMuscles = new Set<MuscleId>([
-    ...currentLoads.keys(),
-    ...baselineLoads.keys(),
-  ])
+  const allMuscles = new Set<MuscleId>([...currentLoads.keys(), ...baselineLoads.keys()])
 
   for (const muscleId of allMuscles) {
     const current = currentLoads.get(muscleId) ?? 0
@@ -215,7 +212,7 @@ export function getWeeklyMuscleProgress(
   const result: WeeklyProgress[] = []
 
   for (const weekStart of lastNWeeks) {
-    const weekSessions = weekMap.get(weekStart)!
+    const weekSessions = weekMap.get(weekStart) ?? []
     // Use a large window (7 days) but since all sessions are in the same week,
     // we just calculate loads for all of them
     const loads = emptyLoadsMap()
@@ -251,14 +248,7 @@ export function getWeeklyMuscleProgress(
 export function getMuscleGroupSummary(
   loads: Map<MuscleId, number>,
 ): Record<MuscleInfo["region"], RegionSummary> {
-  const regions: MuscleInfo["region"][] = [
-    "chest",
-    "back",
-    "arms",
-    "legs",
-    "core",
-    "shoulders",
-  ]
+  const regions: MuscleInfo["region"][] = ["chest", "back", "arms", "legs", "core", "shoulders"]
 
   const summary = {} as Record<MuscleInfo["region"], RegionSummary>
 

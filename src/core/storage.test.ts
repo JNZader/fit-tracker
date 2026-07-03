@@ -32,11 +32,7 @@ describe("pruneSnapshots", () => {
   })
 
   test("removes oldest entries (from the front) when over max", () => {
-    const snapshots = [
-      makeSnapshot("oldest"),
-      makeSnapshot("middle"),
-      makeSnapshot("newest"),
-    ]
+    const snapshots = [makeSnapshot("oldest"), makeSnapshot("middle"), makeSnapshot("newest")]
     // max = 2 → should drop "oldest", keep "middle" and "newest"
     const result = pruneSnapshots(snapshots, 2)
     expect(result).toHaveLength(2)
@@ -57,11 +53,7 @@ describe("pruneSnapshots", () => {
   })
 
   test("does not mutate the original array", () => {
-    const snapshots = [
-      makeSnapshot("a"),
-      makeSnapshot("b"),
-      makeSnapshot("c"),
-    ]
+    const snapshots = [makeSnapshot("a"), makeSnapshot("b"), makeSnapshot("c")]
     const original = [...snapshots]
     pruneSnapshots(snapshots, 2)
     expect(snapshots).toHaveLength(original.length)
@@ -120,7 +112,7 @@ describe("emptyAppData", () => {
     const a = emptyAppData()
     const b = emptyAppData()
     expect(a).not.toBe(b)
-    a.sessions["test"] = { date: "2024-01-01", exercises: {} }
-    expect(b.sessions["test"]).toBeUndefined()
+    a.sessions.test = { date: "2024-01-01", exercises: {} }
+    expect(b.sessions.test).toBeUndefined()
   })
 })

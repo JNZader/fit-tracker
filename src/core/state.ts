@@ -1,5 +1,13 @@
-import type { AppData, ExerciseId, Phase, PRRecord, SessionRecord, Snapshot, TabId } from "@core/types"
 import { loadData, loadStore, saveData } from "@core/storage"
+import type {
+  AppData,
+  ExerciseId,
+  PRRecord,
+  Phase,
+  SessionRecord,
+  Snapshot,
+  TabId,
+} from "@core/types"
 import type { VersionedStore } from "@core/types"
 
 // --- Event map ---

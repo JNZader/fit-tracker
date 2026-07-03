@@ -174,7 +174,8 @@ function render(container: HTMLElement): void {
   const firstDate = allDates.at(0)
   let weekNum = 1
   if (firstDate != null) {
-    const diff = new Date(`${today}T00:00:00Z`).getTime() - new Date(`${firstDate}T00:00:00Z`).getTime()
+    const diff =
+      new Date(`${today}T00:00:00Z`).getTime() - new Date(`${firstDate}T00:00:00Z`).getTime()
     weekNum = Math.max(1, Math.floor(diff / (7 * 86400000)) + 1)
   }
 
@@ -238,7 +239,9 @@ function render(container: HTMLElement): void {
   }
 
   // PRs
-  const prEntries = EXERCISES.map((ex) => ({ ex, best: getBest(sessions, ex.id) })).filter((e) => e.best > 0)
+  const prEntries = EXERCISES.map((ex) => ({ ex, best: getBest(sessions, ex.id) })).filter(
+    (e) => e.best > 0,
+  )
   if (prEntries.length > 0) {
     html += `<div class="home-prs">
       <div class="home-prs__title">Récords personales</div>
@@ -285,11 +288,13 @@ function render(container: HTMLElement): void {
 
   container.innerHTML = html
 
-  container.querySelectorAll<HTMLButtonElement>("[data-action='goto-tracking']").forEach((btn) => {
+  for (const btn of container.querySelectorAll<HTMLButtonElement>(
+    "[data-action='goto-tracking']",
+  )) {
     btn.addEventListener("click", () => {
       navigateTo("tracking")
     })
-  })
+  }
 }
 
 // ---------------------------------------------------------------------------

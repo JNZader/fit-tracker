@@ -2,10 +2,10 @@ import { AppState } from "@core/state"
 import { createAndPrependSnapshot, loadData, saveData } from "@core/storage"
 import type { ExerciseId, Phase, SessionRecord } from "@core/types"
 import { EXERCISE_IDS, PAIN_ZONES } from "@core/types"
+import { init as initHeatmap } from "@modules/heatmap/heatmap"
 import { detectPhaseAdvancement } from "@modules/phase/phase"
 import { IsometricTimer } from "@modules/timer/timer"
 import { destroyChart, renderWeeklyVolumeChart } from "./charts"
-import { init as initHeatmap } from "@modules/heatmap/heatmap"
 import "./tracking.css"
 
 // ---------------------------------------------------------------------------
@@ -748,10 +748,7 @@ function computeStreak(sessions: Record<string, SessionRecord>): number {
  * Consistency %: sessions this year / (elapsed weeks × target days per phase).
  * Target days per phase: Phase 1 → 3, Phase 2 → 4, Phase 3 → 4, Phase 4 → 5.
  */
-function computeConsistency(
-  sessions: Record<string, SessionRecord>,
-  phase: Phase,
-): number {
+function computeConsistency(sessions: Record<string, SessionRecord>, phase: Phase): number {
   const targetDays = ROUNDS_PER_PHASE[phase] // reusing same map (3/4/4/5)
   const yearStart = new Date(`${new Date().getFullYear()}-01-01T00:00:00Z`)
   const now = new Date()
@@ -809,7 +806,7 @@ function buildHeatmapSVG(sessions: Record<string, SessionRecord>): string {
   const cellGap = 2
   const step = cellSize + cellGap
   const leftPad = 20 // for day labels
-  const topPad = 20  // for month labels
+  const topPad = 20 // for month labels
 
   // Collect weeks
   const weeks: Array<Array<{ iso: string; dow: number }>> = []
@@ -835,7 +832,20 @@ function buildHeatmapSVG(sessions: Record<string, SessionRecord>): string {
   const svgHeight = topPad + 7 * step + 24 // 24px for legend
 
   // Month label positions
-  const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+  const monthNames = [
+    "Ene",
+    "Feb",
+    "Mar",
+    "Abr",
+    "May",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dic",
+  ]
   const monthLabels: Array<{ x: number; label: string }> = []
   let lastMonth = -1
   weeks.forEach((week, wi) => {
@@ -857,7 +867,7 @@ function buildHeatmapSVG(sessions: Record<string, SessionRecord>): string {
       const data = dayMap.get(cell.iso)
       const fill = heatColor(data, maxVol)
       const isToday = cell.iso === todayISO_
-      const stroke = isToday ? " stroke=\"#bf9b3e\" stroke-width=\"1\"" : ""
+      const stroke = isToday ? ' stroke="#bf9b3e" stroke-width="1"' : ""
       const title = data
         ? `${cell.iso}: vol ${data.volume}${data.hasPain ? " ⚠ dolor" : ""}`
         : cell.iso
@@ -904,7 +914,7 @@ function buildMonthlyBarSVG(sessions: Record<string, SessionRecord>): string {
   const monthCounts = new Array<number>(12).fill(0)
   for (const s of Object.values(sessions)) {
     if (s.date.startsWith(String(year))) {
-      const m = parseInt(s.date.slice(5, 7), 10) - 1
+      const m = Number.parseInt(s.date.slice(5, 7), 10) - 1
       if (m >= 0 && m < 12) monthCounts[m] = (monthCounts[m] ?? 0) + 1
     }
   }

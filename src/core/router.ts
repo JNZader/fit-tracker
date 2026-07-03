@@ -1,6 +1,6 @@
+import { AppState } from "@core/state"
 import type { TabId } from "@core/types"
 import { TAB_IDS } from "@core/types"
-import { AppState } from "@core/state"
 
 // --- Constants ---
 
@@ -73,7 +73,7 @@ export class HashRouter {
     // Show/hide .sec elements based on data-tab attribute
     const sections = document.querySelectorAll<HTMLElement>(".sec")
     for (const section of sections) {
-      const sectionTab = section.dataset["tab"]
+      const sectionTab = section.dataset.tab
       if (sectionTab === activeTab) {
         section.style.display = "block"
         section.removeAttribute("hidden")
@@ -86,7 +86,7 @@ export class HashRouter {
     // Update active state on nav links
     const navLinks = document.querySelectorAll<HTMLElement>("[data-nav-tab]")
     for (const link of navLinks) {
-      const linkTab = link.dataset["navTab"]
+      const linkTab = link.dataset.navTab
       if (linkTab === activeTab) {
         link.classList.add("active")
         link.setAttribute("aria-current", "page")

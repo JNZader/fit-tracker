@@ -62,9 +62,7 @@ describe("getPhaseConfig", () => {
 
   test("Phase 1 config has push-up requirement of 12 reps", () => {
     const config = getPhaseConfig(PHASES.ONE)
-    const pushReq = config?.requirements.find(
-      (r) => r.exerciseId === EXERCISE_IDS.PUSH
-    )
+    const pushReq = config?.requirements.find((r) => r.exerciseId === EXERCISE_IDS.PUSH)
     expect(pushReq?.minValue).toBe(12)
     expect(pushReq?.unit).toBe(EXERCISE_UNITS.REPS)
   })
@@ -241,7 +239,7 @@ describe("detectPhaseAdvancement", () => {
           date: dateStr,
           exercises: {
             [EXERCISE_IDS.PUSH]: [15], // >= 12
-            [EXERCISE_IDS.ROW]: [18],  // >= 15
+            [EXERCISE_IDS.ROW]: [18], // >= 15
             [EXERCISE_IDS.PLANK]: [45], // >= 40
             [EXERCISE_IDS.WALLSIT]: [45], // >= 40
           },

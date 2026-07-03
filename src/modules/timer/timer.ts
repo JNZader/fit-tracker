@@ -1,5 +1,5 @@
-import type { ExerciseId } from "@core/types"
 import { AppState } from "@core/state"
+import type { ExerciseId } from "@core/types"
 
 // --- Constants ---
 
@@ -19,7 +19,7 @@ export class IsometricTimer {
   private readonly onTick: (remaining: number) => void
   private readonly onComplete: () => void
 
-  private endTime: number = 0
+  private endTime = 0
   private rafId: number | null = null
   private audioCtx: AudioContext | null = null
 
@@ -29,7 +29,7 @@ export class IsometricTimer {
     exerciseId: ExerciseId,
     durationSecs: number,
     onTick: (remaining: number) => void,
-    onComplete: () => void
+    onComplete: () => void,
   ) {
     this.exerciseId = exerciseId
     this.durationSecs = durationSecs
@@ -154,13 +154,13 @@ export class IsometricTimer {
   static recover(
     exerciseId: ExerciseId,
     onTick: (remaining: number) => void,
-    onComplete: () => void
+    onComplete: () => void,
   ): IsometricTimer | null {
     const raw = sessionStorage.getItem(storageKey(exerciseId))
     if (!raw) return null
 
     const endTime = Number(raw)
-    if (isNaN(endTime)) return null
+    if (Number.isNaN(endTime)) return null
 
     const remaining = (endTime - Date.now()) / 1000
     if (remaining <= 0) {

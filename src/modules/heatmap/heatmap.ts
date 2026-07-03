@@ -1,13 +1,13 @@
 import { loadData } from "@core/storage"
-import { MUSCLES, type MuscleId } from "./muscle-map"
+import type { SessionRecord } from "@core/types"
 import {
+  type RegionSummary,
   calculateMuscleLoad,
   detectImbalances,
   getMuscleGroupSummary,
-  type RegionSummary,
 } from "./heatmap-engine"
-import { renderBodyFront, renderBodyBack, applyHeatMap } from "./heatmap-svg"
-import type { SessionRecord } from "@core/types"
+import { applyHeatMap, renderBodyBack, renderBodyFront } from "./heatmap-svg"
+import { MUSCLES, type MuscleId } from "./muscle-map"
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -93,10 +93,7 @@ function renderImbalances(container: HTMLElement, sessions: SessionRecord[]): vo
 // Render region summary
 // ---------------------------------------------------------------------------
 
-function renderRegionSummary(
-  container: HTMLElement,
-  summary: Record<string, RegionSummary>,
-): void {
+function renderRegionSummary(container: HTMLElement, summary: Record<string, RegionSummary>): void {
   const grid = document.createElement("div")
   grid.className = "region-summary"
 

@@ -124,25 +124,16 @@ const SessionRecordSchema = z.object({
   date: z.string(),
   exercises: z.record(z.array(z.number())).optional(),
   rpe: z.number().min(1).max(10).optional(),
-  feeling: z.union([
-    z.literal(1),
-    z.literal(2),
-    z.literal(3),
-    z.literal(4),
-    z.literal(5),
-  ]).optional(),
+  feeling: z
+    .union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)])
+    .optional(),
   pain: z.enum(["No", "Rodilla", "Hombro", "Lumbar", "Muñeca", "Otro"]).optional(),
   notes: z.string().optional(),
 })
 
 export const AppDataSchema = z.object({
   schemaVersion: z.number(),
-  currentPhase: z.union([
-    z.literal(1),
-    z.literal(2),
-    z.literal(3),
-    z.literal(4),
-  ]),
+  currentPhase: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
   sessions: z.record(SessionRecordSchema),
   prs: z.record(z.array(PRRecordSchema)),
 })

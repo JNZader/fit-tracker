@@ -1,6 +1,5 @@
 import { describe, expect, it } from "bun:test"
 import type { SessionRecord } from "@core/types"
-import type { MuscleId } from "./muscle-map"
 import {
   calculateMuscleLoad,
   detectImbalances,
@@ -8,14 +7,12 @@ import {
   getMuscleGroupSummary,
   getWeeklyMuscleProgress,
 } from "./heatmap-engine"
+import type { MuscleId } from "./muscle-map"
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-function makeSession(
-  date: string,
-  exercises: SessionRecord["exercises"],
-): SessionRecord {
+function makeSession(date: string, exercises: SessionRecord["exercises"]): SessionRecord {
   return { date, exercises }
 }
 
@@ -33,9 +30,7 @@ describe("calculateMuscleLoad", () => {
   })
 
   it("calculates push-up load correctly (3 sets of 10)", () => {
-    const sessions: SessionRecord[] = [
-      makeSession("2026-04-10", { push: [10, 10, 10] }),
-    ]
+    const sessions: SessionRecord[] = [makeSession("2026-04-10", { push: [10, 10, 10] })]
     const loads = calculateMuscleLoad(sessions, 7)
 
     // Primary muscles (weight 1.0): totalReps=30, load=30*1.0=30
@@ -58,7 +53,7 @@ describe("calculateMuscleLoad", () => {
     const sessions: SessionRecord[] = [
       makeSession("2026-04-10", {
         push: [10, 10], // 20 total reps
-        row: [8, 8],    // 16 total reps
+        row: [8, 8], // 16 total reps
       }),
     ]
     const loads = calculateMuscleLoad(sessions, 7)
@@ -86,8 +81,8 @@ describe("calculateMuscleLoad", () => {
   it("windowDays filters to last N days only", () => {
     const sessions: SessionRecord[] = [
       makeSession("2026-04-01", { push: [100] }), // >7 days ago from reference
-      makeSession("2026-04-09", { push: [10] }),   // within 7 days
-      makeSession("2026-04-10", { push: [10] }),   // within 7 days
+      makeSession("2026-04-09", { push: [10] }), // within 7 days
+      makeSession("2026-04-10", { push: [10] }), // within 7 days
     ]
     // windowDays=7 from the most recent session date (2026-04-10)
     const loads = calculateMuscleLoad(sessions, 7)
@@ -210,12 +205,8 @@ describe("detectImbalances", () => {
   })
 
   it("supports configurable threshold", () => {
-    const current = new Map<MuscleId, number>([
-      ["pectorals" as MuscleId, 130],
-    ])
-    const baseline = new Map<MuscleId, number>([
-      ["pectorals" as MuscleId, 100],
-    ])
+    const current = new Map<MuscleId, number>([["pectorals" as MuscleId, 130]])
+    const baseline = new Map<MuscleId, number>([["pectorals" as MuscleId, 100]])
     // Default threshold 1.5 → 130 is balanced
     const defaultResult = detectImbalances(current, baseline)
     expect(defaultResult.balanced).toContain("pectorals")
@@ -226,9 +217,7 @@ describe("detectImbalances", () => {
   })
 
   it("handles muscles in current but not in baseline", () => {
-    const current = new Map<MuscleId, number>([
-      ["pectorals" as MuscleId, 50],
-    ])
+    const current = new Map<MuscleId, number>([["pectorals" as MuscleId, 50]])
     const baseline = new Map<MuscleId, number>()
     // No baseline = no comparison possible, treat as balanced
     const result = detectImbalances(current, baseline)
@@ -238,9 +227,7 @@ describe("detectImbalances", () => {
 
   it("handles muscles in baseline but not in current", () => {
     const current = new Map<MuscleId, number>()
-    const baseline = new Map<MuscleId, number>([
-      ["pectorals" as MuscleId, 100],
-    ])
+    const baseline = new Map<MuscleId, number>([["pectorals" as MuscleId, 100]])
     const result = detectImbalances(current, baseline)
     expect(result.underTrained).toContain("pectorals")
   })
@@ -267,16 +254,16 @@ describe("getWeeklyMuscleProgress", () => {
     expect(result.length).toBe(2)
 
     // Week 15: 20 reps total → pectorals 20*1.0=20
-    expect(result[0]!.loads.get("pectorals" as MuscleId)).toBe(20)
+    expect(result[0]?.loads.get("pectorals" as MuscleId)).toBe(20)
     // Week 16: 10 reps → pectorals 10*1.0=10
-    expect(result[1]!.loads.get("pectorals" as MuscleId)).toBe(10)
+    expect(result[1]?.loads.get("pectorals" as MuscleId)).toBe(10)
   })
 
   it("limits to last N weeks", () => {
     const sessions: SessionRecord[] = [
       makeSession("2026-03-01", { push: [10] }), // ~5 weeks ago
-      makeSession("2026-04-06", { push: [10] }),  // week 15
-      makeSession("2026-04-10", { push: [10] }),  // week 15
+      makeSession("2026-04-06", { push: [10] }), // week 15
+      makeSession("2026-04-10", { push: [10] }), // week 15
     ]
     const result = getWeeklyMuscleProgress(sessions, 2)
     // Only last 2 weeks should be included
@@ -284,14 +271,12 @@ describe("getWeeklyMuscleProgress", () => {
   })
 
   it("each entry has a weekStart date string", () => {
-    const sessions: SessionRecord[] = [
-      makeSession("2026-04-08", { push: [10] }),
-    ]
+    const sessions: SessionRecord[] = [makeSession("2026-04-08", { push: [10] })]
     const result = getWeeklyMuscleProgress(sessions, 4)
     expect(result.length).toBe(1)
-    expect(typeof result[0]!.weekStart).toBe("string")
+    expect(typeof result[0]?.weekStart).toBe("string")
     // Week start should be the Monday of that week
-    expect(result[0]!.weekStart).toBe("2026-04-06")
+    expect(result[0]?.weekStart).toBe("2026-04-06")
   })
 })
 
@@ -320,9 +305,7 @@ describe("getMuscleGroupSummary", () => {
   })
 
   it("returns all regions even if some have zero load", () => {
-    const loads = new Map<MuscleId, number>([
-      ["pectorals" as MuscleId, 30],
-    ])
+    const loads = new Map<MuscleId, number>([["pectorals" as MuscleId, 30]])
     const summary = getMuscleGroupSummary(loads)
 
     expect(summary).toHaveProperty("chest")

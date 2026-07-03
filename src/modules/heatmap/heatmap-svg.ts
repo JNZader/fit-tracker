@@ -1,5 +1,5 @@
+import { type HeatLevel, getHeatLevel } from "./heatmap-engine"
 import type { MuscleId } from "./muscle-map"
-import { getHeatLevel, type HeatLevel } from "./heatmap-engine"
 
 // ---------------------------------------------------------------------------
 // SVG body silhouettes with simplified geometric shapes
@@ -103,9 +103,7 @@ function bodyOutline(): string {
 // Render functions
 // ---------------------------------------------------------------------------
 
-function renderMuscleEllipses(
-  muscles: typeof FRONT_MUSCLES,
-): string {
+function renderMuscleEllipses(muscles: typeof FRONT_MUSCLES): string {
   return muscles
     .map(
       (m) =>
